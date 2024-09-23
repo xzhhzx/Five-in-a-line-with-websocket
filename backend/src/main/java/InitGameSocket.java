@@ -1,11 +1,3 @@
-/**
- * ToUpper356Socket class
- * description: TODO
- *
- * @author User
- * @date 2024/9/19
- */
-
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
