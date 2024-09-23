@@ -1,3 +1,8 @@
+/**
+ * This script has two functional parts:
+ *  1. Frontend rendering (game board)
+ *  2. WebSocket creation (synchronizing move to opponent)
+ */
 
 const N = 10;
 var matrix = Array(N).fill().map(() => Array(N).fill(0));
@@ -205,7 +210,7 @@ function putChess(x, y, playerRole) {
 
     if (isWin(x, y, player)) {
         window.alert("Player " + player + " wins!");
-        resetGame();
+        // resetGame();
     }
 }
 
@@ -219,13 +224,12 @@ function updatePromptText() {
 }
 
 // =================================================
-// =================================================
 
+const conn = new WebSocket("ws://localhost:8080/syncGame");
 
 // TODO: need to have a conn/disconn state in order to detect if server and opponent are both connected
 // TODO: may be optimized into peer-to-peer communication in the future
 function createSyncGameSocket() {
-    conn = new WebSocket("ws://localhost:8080/syncGame");
     conn.onopen = function (evt) {
         console.log("***ONOPEN: created sync-WebSocket");
         conn.send(
@@ -274,100 +278,6 @@ function syncToOpponent(x, y) {
     conn.send(message);
 }
 
-createSyncGameSocket();
-
-
-
-// =================================================
-// ============== RENDER =====================
-
-function createGameElement(rootElement, gameId, p1NameStr, p2NameStr) {
-    game = document.createElement("div");
-    game.setAttribute("class", "game");
-    game.id = gameId;
-    rootElement.appendChild(game);
-
-    p1 = document.createElement("div");
-    p1Icon = document.createElement("div");
-    p1Name = document.createElement("div"); p1Name.innerHTML = p1NameStr;
-    p2 = document.createElement("div");
-    p2Icon = document.createElement("div");
-    p2Name = document.createElement("div"); p2Name.innerHTML = p2NameStr;
-    desk = document.createElement("div");
-
-    p1.setAttribute("class", "playerWrapper");
-    p1Icon.setAttribute("class", p1NameStr == "" ? "playerIcon emptySeat" : "playerIcon");
-    p1Name.setAttribute("class", "playerName");
-    p2.setAttribute("class", "playerWrapper");
-    p2Icon.setAttribute("class", p2NameStr == "" ? "playerIcon emptySeat" : "playerIcon");
-    p2Name.setAttribute("class", "playerName");
-    desk.setAttribute("class", "desk");
-
-    p1.appendChild(p1Icon); p1.appendChild(p1Name);
-    p2.appendChild(p2Icon); p2.appendChild(p2Name);
-
-    if (p2NameStr == "") {
-        p2Icon.addEventListener(
-            "mouseenter",
-            (event) => {
-                // highlight the mouseenter target
-                event.target.style.backgroundColor = "red";
-
-                // reset the color after a short delay
-                // setTimeout(() => {
-                //     event.target.style.color = "";
-                // }, 500);
-            },
-            false,
-        );
-
-        p2Icon.addEventListener(
-            "mouseleave",
-            (event) => {
-                event.target.style.backgroundColor = "#ebf0ed";
-            },
-            false,
-        );
-
-        p2Icon.addEventListener(
-            "click",
-            (event) => {
-                console.log("occupied!");
-                // Extract the gameId of the game that the user choosed
-                chosenGameId = event.target.parentElement.parentElement.id;
-                sendToInitSocket("JOIN_" + chosenGameId);
-            },
-            false,
-        );
-    }
-
-    game.appendChild(p1);
-    game.appendChild(desk);
-    game.appendChild(p2);
-}
-
 console.log("gameId: " + localStorage.getItem("gameId"));
 
-function renderHall(gameArr) {
-    var hall = document.getElementById("hall");
-    gameArr.forEach(e => {
-        console.log("123".substring(0, 5));
-        createGameElement(
-            hall,
-            e.gameId,
-            (e.playerOneId ?? "").substring(0, 4),
-            (e.playerTwoId ?? "").substring(0, 4)
-        );
-    });
-}
-
-function renderCurrentGameToHall(myPlayerId) {
-    var hall = document.getElementById("hall");
-    console.log("Add new game: " + localStorage.getItem("gameId"));
-    createGameElement(
-        hall,
-        localStorage.getItem("gameId"),
-        myPlayerId.substring(0, 4),
-        ""
-    );
-}
+createSyncGameSocket();
