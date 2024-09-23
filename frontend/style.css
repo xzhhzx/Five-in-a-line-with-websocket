@@ -39,6 +39,12 @@ header > h1 {
 	margin-right:auto;
 } */
 
+#prompt {
+	font-size: 20px;
+	color: #c52e2e;
+	margin: 20%;
+}
+
 #gameboard {
 	/* align-items: center; */
 	/* align-self: center; */

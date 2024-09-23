@@ -1,6 +1,7 @@
 
 const N = 10;
 var matrix = Array(N).fill().map(() => Array(N).fill(0));
+var isMyTurn = false;
 
 // Dynamically create a table
 function createGameBoard() {
@@ -14,7 +15,7 @@ function createGameBoard() {
     tbody = document.createElement("tbody");
     table.appendChild(tbody);
 
-    // creating all cells
+    // Create all cells
     for (var j = 0; j < N; j++) {
         // create a <tr> element and append the row <tr> into <tbody>
         row = document.createElement("tr");
@@ -36,8 +37,16 @@ function createGameBoard() {
             cell.appendChild(img)
         }
     }
+
+    // Add event listeners
+    table.querySelectorAll(".cell_img").forEach(cell_img => {
+        // console.log(cell_img);
+        cell_img.addEventListener('mouseenter', () => { if (isMyTurn == true) { showChessShadow_img(cell_img); } });
+        cell_img.addEventListener('mouseout', () => { if (isMyTurn == true) { unshowChessShadow_img(cell_img); } });
+        cell_img.addEventListener('click', () => { if (isMyTurn == true) { makeMove(cell_img); } });
+    });
     // sets the border attribute of table to 2;
-    // table.setAttribute("border","2");  
+    // table.setAttribute("border","2");
 }
 
 function isWin(x, y, player) {
@@ -150,10 +159,25 @@ function unshowChessShadow_img(cell_img) {
     }
 }
 
+function makeMove(cell_img) {
+    // 1.Render chess board
+    putChess(
+        cell_img.id.split('_')[0],
+        cell_img.id.split('_')[1],
+        localStorage.getItem("playerRole")
+    );
+
+    // 2.Send SYNC message to opponent
+    syncToOpponent(
+        cell_img.id.split('_')[0],
+        cell_img.id.split('_')[1]
+    );
+}
 
 // TODO: this function can be used for both the current player and the opponent
 // however, for the current player, `document.getElementById` is not needed. This may decrease efficiency 
 function putChess(x, y, playerRole) {
+
     let cellImgElement = document.getElementById(x + "_" + y + "_img");
     x = parseInt(x);
     y = parseInt(y);
@@ -161,7 +185,6 @@ function putChess(x, y, playerRole) {
 
     console.warn("=== player: " + player);
     console.warn("=== cellImgElement: " + cellImgElement);
-
 
     if (matrix[x][y] === 0) {
         console.log('Player ' + player + ' confirms chess position: ' + x + ", " + y);
@@ -172,9 +195,10 @@ function putChess(x, y, playerRole) {
         } else if (player === 2) {
             console.warn("=== put player 2 ");
             cellImgElement.src = "./image/grid_chess_white.png";    // Modify image
-        } else {
-            console.warn("Wrong parameter player=" + player);
         }
+        isMyTurn = !isMyTurn;
+        console.log("isMyTurn flipped to: " + isMyTurn);
+        updatePromptText();
     } else {
         window.alert("Already occupied!");
     }
@@ -186,33 +210,13 @@ function putChess(x, y, playerRole) {
 }
 
 
-function main() {
-    createGameBoard();
-    table.querySelectorAll(".cell_img").forEach(cell_img => {
-        // console.log(cell_img);
-        cell_img.addEventListener('mouseenter', () => showChessShadow_img(cell_img));
-        cell_img.addEventListener('mouseout', () => unshowChessShadow_img(cell_img));
-        cell_img.addEventListener('click', () => {
-                // 1.Render chess board
-                putChess(
-                    cell_img.id.split('_')[0],
-                    cell_img.id.split('_')[1],
-                    localStorage.getItem("playerRole")
-                );
-
-                // 2.Send SYNC message to opponent
-                syncToOpponent(
-                    cell_img.id.split('_')[0],
-                    cell_img.id.split('_')[1]
-                );
-            }
-        );
-    });
-
-    console.log(matrix);
+function updatePromptText() {
+    if (isMyTurn == true) {
+        document.getElementById("prompt").innerHTML = "Make a move!"
+    } else {
+        document.getElementById("prompt").innerHTML = "Waiting for opponent to take turn..."
+    }
 }
-
-// main();
 
 // =================================================
 // =================================================
@@ -229,7 +233,13 @@ function createSyncGameSocket() {
             + localStorage.getItem("gameId") + "_"
             + localStorage.getItem("playerRole")
         );
-        main();
+        createGameBoard();
+
+        // Set isMyTurn according to playerRole (p1 goes first)
+        if (localStorage.getItem("playerRole") == "p1") {
+            isMyTurn = true;
+        }
+        updatePromptText();
     };
 
     conn.onmessage = function (evt) {
