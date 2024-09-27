@@ -3,6 +3,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.UUID;
 
+// Each WebSocket session will create a new InitGameSocket object
 @ServerEndpoint("/initGame")
 public class InitGameSocket {
 
@@ -10,7 +11,6 @@ public class InitGameSocket {
     public void onOpen(Session session) throws IOException {
         System.out.println("WebSocket opened: " + session.getId());
         session.getBasicRemote().sendText("GAMES_" + GameStorage.getAllGamesString());
-//        session.getBasicRemote().sendText("GAMES_" + GameStorage.getAllGames().toString());
     }
 
     @OnMessage
@@ -25,13 +25,23 @@ public class InitGameSocket {
             g.setPlayerOneInitSession(session);
             g.setStarted(false);
             GameStorage.getAllGames().put(gameId.toString(), g);
-            session.getBasicRemote().sendText("WAITING_" + gameId.toString() + "_" + playerOneId);
-
+            session.getBasicRemote().sendText("WAITING_" + gameId + "_" + playerOneId);
+            // Broadcast to every (including this session) `initGame` WebSocket sessions (filter out `syncGame` sessions)
+            for (Session e : session.getOpenSessions()) {
+                if ("/initGame".equals(e.getRequestURI().getPath())) {
+                    System.out.println("=== opened initGame session: " + e.getId() + " | " + e.getRequestURI().getPath());
+                    e.getBasicRemote().sendText("ADD_GAME_" + GameStorage.toJsonString(g));
+                }
+            }
         } else if (message.startsWith("JOIN_")) {
             String existedGameId = message.split("_")[1];
             Game existedGame = GameStorage.getAllGames().get(existedGameId);
             if (null == existedGame) {
                 throw new Exception("gameId " + existedGameId + " does not exist!");
+            }
+            // 并发异常控制: 多个用户同时对同一个game发起JOIN请求
+            if (existedGame.isStarted()) {
+                throw new Exception("Concurrency problem! User requested to join a game that already started!");
             }
             UUID playerTwoId = UUID.randomUUID();
             existedGame.setPlayerTwoId(playerTwoId);
@@ -43,6 +53,16 @@ public class InitGameSocket {
             session.getBasicRemote().sendText("STARTED_" + existedGameId + "_p2");
             existedGame.getPlayerOneInitSession().getBasicRemote().sendText("STARTED_" + existedGameId + "_p1");
 
+            // For other users (except p1 and p2), broadcast a START_GAME message
+            for (Session e : session.getOpenSessions()) {
+                if ("/initGame".equals(e.getRequestURI().getPath())
+                        && e != session
+                        && e != existedGame.getPlayerOneInitSession()
+                ) {
+                    System.out.println("===== broadcast START_GAME to session: " + e.getId());
+                    e.getBasicRemote().sendText("START_GAME_" + GameStorage.toJsonString(existedGame));
+                }
+            }
             // ...Until now, this socket (together with the opponent's initSocket) can be closed (done by client)
         } else {
             System.out.println("warning: unsupported message!");
@@ -51,6 +71,6 @@ public class InitGameSocket {
 
     @OnClose
     public void onClose(CloseReason reason, Session session) {
-        System.out.println("Closing a WebSocket due to " + reason.getReasonPhrase());
+        System.out.println("Closing a WebSocket: " + reason);
     }
 }

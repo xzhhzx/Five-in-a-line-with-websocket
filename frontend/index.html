@@ -5,6 +5,7 @@
   <meta charset="utf-8>" />
   <title>Five-in-a-line</title>
   <link rel="stylesheet" href="./style.css" type="text/css" />
+  <link rel="stylesheet" href="./style-loading-animation.css" type="text/css" />
 </head>
 
 <body>
@@ -12,8 +13,32 @@
     <h1>Five-in-a-line</h1>
   </header>
 
+  <div id="overlay">
+    <div class="waiting-text">
+      <h1>Waiting for an opponent</h1>
+    </div>
+
+    <div class="area">
+      <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+  </div>
+
+  <button type="button" onclick="sendToInitSocket('NEW')">NEW</button>
+  <button type="button" onclick="sendToInitSocket('HHH')">hahah</button>
   <div id="hall">
-    <button type="button" onclick="sendToInitSocket('NEW')">NEW</button>
+    <!-- <div id="waitingGames"></div> -->
+    <!-- <div id="ongoingGames"></div> -->
   </div>
 
   <!-- Create initSocket -->

@@ -1,96 +1,123 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700");
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:300,500');
 html {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 *,
 *:before,
 *:after {
-	box-sizing: inherit;
+  box-sizing: inherit;
 }
 
 * {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-	background: #faf8f9;
-	color: #fff;
-	font-family: "Roboto", sans-serif;
+  background: #faf8f9;
+  color: #fff;
+  font-family: "Roboto", sans-serif;
 }
 
 header {
-	/* background: #fff; */
-	/* padding: 20px; */
-	margin: 30px auto;
+  /* background: #fff; */
+  /* padding: 20px; */
+  margin: 30px auto;
 }
 
 header > h1 {
-	color: rgb(167, 167, 167);
-	text-align: center;
-	/* font-weight: 100; */
+  color: rgb(167, 167, 167);
+  text-align: center;
+  /* font-weight: 100; */
 }
 
 
 /* table.center {
-	margin-left:auto; 
-	margin-right:auto;
+  margin-left:auto; 
+  margin-right:auto;
 } */
 
 #prompt {
-	font-size: 20px;
-	color: #c52e2e;
-	margin: 20%;
+  font-size: 20px;
+  color: #c52e2e;
+  margin: 5%;
 }
 
 #gameboard {
-	/* align-items: center; */
-	/* align-self: center; */
-	/* width: 70%; */
-	margin-top: 5%;
-	margin-bottom: 5%;
+  /* align-items: center; */
+  /* align-self: center; */
+  /* width: 70%; */
+  margin-top: 5%;
+  margin-bottom: 5%;
   margin-left: 5%; 
-	margin-right: 5%;
+  margin-right: 5%;
 }
 
 /* #wrapper {
-	width: 10%;
-	margin: auto;
-	margin-top: 25%;
-	margin-bottom: 25%;
+  width: 10%;
+  margin: auto;
+  margin-top: 25%;
+  margin-bottom: 25%;
   margin-left: 5%; 
-	margin-right: 5%;
+  margin-right: 5%;
 
-	padding-bottom: 16em;
+  padding-bottom: 16em;
 
-	text-align: center; 
-	float: left;
+  text-align: center; 
+  float: left;
 } */
 
+#overlay {
+	/* Layer styles */
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+	z-index: 2;
+
+	/* Text styles */
+	text-align: center;
+	align-content: center;
+	font-size: 50px;
+	user-select: none; /* Disable Text Selection */
+}
+
 #hall {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: space-evenly;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+#waitingGames, #ongoingGames {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .game {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 180px;
-	height: 100px;
-	margin: 5px;
-	background-color: #d5f38d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 100px;
+  margin: 5px;
+  background-color: #d5f38d;
 }
 
 .playerWrapper {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	/* justify-content: center; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
 }
 
 
@@ -103,150 +130,150 @@ header > h1 {
 }
 
 .emptySeat {
-	background-color: #ebf0ed;
+  background-color: #ebf0ed;
 }
 
 .playerName {
-	height: 1.0rem;
+  height: 1.0rem;
 }
 
 .desk {
   height: 1.0rem;
-	width: 1.0rem;
-	margin: 10px;
+  width: 1.0rem;
+  margin: 10px;
   background-color: #bbb;
 }
 
 #mtable{
-	margin: auto;
-	/* margin-left: 20%;
-	margin-right: 20%; */
-	/* border-spacing: 0.0rem; */	/*Same as below*/
-	border-collapse: collapse;
+  margin: auto;
+  /* margin-left: 20%;
+  margin-right: 20%; */
+  /* border-spacing: 0.0rem; */  /*Same as below*/
+  border-collapse: collapse;
 }
 
 
 tbody{
-	/* background-color: #c4c56c; */
-	/* align-self: center; */
-	/* border: 10px solid red; */
-	/* border-style: inset; */
-	/* box-shadow: 0 0 0 2rem skyblue; */
-	/* border: 0.5rem inset rgb(192, 255, 252); */
-	border: 4mm ridge rgba(237, 243, 132, 0.6);
+  /* background-color: #c4c56c; */
+  /* align-self: center; */
+  /* border: 10px solid red; */
+  /* border-style: inset; */
+  /* box-shadow: 0 0 0 2rem skyblue; */
+  /* border: 0.5rem inset rgb(192, 255, 252); */
+  border: 4mm ridge rgba(237, 243, 132, 0.6);
 }
 
 .row{
-	/* display: inline-block; */
-	display: block;
-	/* padding: 10px; */
-	/* margin: 10px; */
-	/* border: #4dcc7d; */
-	height: 64px;
-	/* width: 320px; */
+  /* display: inline-block; */
+  display: block;
+  /* padding: 10px; */
+  /* margin: 10px; */
+  /* border: #4dcc7d; */
+  height: 64px;
+  /* width: 320px; */
 }
 
 .cell{
-	/* background-image: url("./image/grid_chess_shadow.png"); */
-	/* background-color: aqua; */
-	/* display: inline-block; */
-	/* display: block; */
-	/* display: inline; */
-	/* border: 3px solid #fff; */
-	/* border-radius: 50%; */
-	/* padding: 10px; */
-	/* margin: auto 10px; */
-	/* transition: all 0.3s ease; */
+  /* background-image: url("./image/grid_chess_shadow.png"); */
+  /* background-color: aqua; */
+  /* display: inline-block; */
+  /* display: block; */
+  /* display: inline; */
+  /* border: 3px solid #fff; */
+  /* border-radius: 50%; */
+  /* padding: 10px; */
+  /* margin: auto 10px; */
+  /* transition: all 0.3s ease; */
 
-	margin: 0px;
-	border: 0px;
-	padding: 0px;
-	/* height: 64px;
-	width: 64px; */
+  margin: 0px;
+  border: 0px;
+  padding: 0px;
+  /* height: 64px;
+  width: 64px; */
 }
 
 
 
 /* button {
-	width: 30%;
-	height: 5%;
-	align-self: center;
-	align-content: center;
-	text-align: center;
+  width: 30%;
+  height: 5%;
+  align-self: center;
+  align-content: center;
+  text-align: center;
 } */
 
 
 
 
 #user-label {
-	position: absolute;
-	top: 50%;
-	left: -5%;
-	transform: translate(-10%, -50%);
+  position: absolute;
+  top: 50%;
+  left: -5%;
+  transform: translate(-10%, -50%);
 }
 
 #computer-label {
-	position: absolute;
-	top: 50%;
-	right: -5%;
-	transform: translate(10%, -50%);
+  position: absolute;
+  top: 50%;
+  right: -5%;
+  transform: translate(10%, -50%);
 }
 
 .result {
-	font-weight: 300;
-	text-align: center;
-	font-size: 32px;
-	line-height: 40px;
+  font-weight: 300;
+  text-align: center;
+  font-size: 32px;
+  line-height: 40px;
 }
 
 
 
 .choices {
-	margin: 0 auto;
-	text-align: center;
-	padding: 40px 0;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 0;
 }
 
 .choice {
-	display: inline-block;
-	border: 3px solid #fff;
-	border-radius: 50%;
-	padding: 10px;
-	margin: auto 10px;
-	transition: all 0.3s ease;
+  display: inline-block;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  padding: 10px;
+  margin: auto 10px;
+  transition: all 0.3s ease;
 }
 
 .choice img {
-	filter: invert(100%);
+  filter: invert(100%);
 }
 
 #action-message {
-	text-align: center;
-	font-weight: 500;
-	text-transform: uppercase;
-	letter-spacing: 2px;
-	margin: 40px 0;
+  text-align: center;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 40px 0;
 }
 
 .winningStyles {
-	border: 3px solid #4dcc7d;
-	background-color: #043507;
-	box-shadow: 0 0 20px #043507;
+  border: 3px solid #4dcc7d;
+  background-color: #043507;
+  box-shadow: 0 0 20px #043507;
 }
 
 .losingStyles {
-	border: 3px solid #c52e2e;
-	background-color: #2e0303;
-	box-shadow: 0 0 20px #2e0303;
+  border: 3px solid #c52e2e;
+  background-color: #2e0303;
+  box-shadow: 0 0 20px #2e0303;
 }
 
 .drawStyles {
-	border: 3px solid #444;
-	background-color: #222;
-	box-shadow: 0 0 20px #222;
+  border: 3px solid #444;
+  background-color: #222;
+  box-shadow: 0 0 20px #222;
 }
 
 sup {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }

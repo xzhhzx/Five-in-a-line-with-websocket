@@ -209,7 +209,23 @@ function putChess(x, y, playerRole) {
     }
 
     if (isWin(x, y, player)) {
-        window.alert("Player " + player + " wins!");
+        // TODO: change to unblocked alert
+        setTimeout(
+            e => {
+                window.alert("Player " + player + " wins!");
+            }, 500
+        )
+        
+        conn.send(
+            "DISCONN_"
+            + localStorage.getItem("gameId") + "_"
+            + localStorage.getItem("playerRole")
+        );
+
+        // 改为由服务端发起
+        // conn.close();
+
+        // TODO: add feature: restart game according to both users' choice
         // resetGame();
     }
 }
@@ -233,7 +249,7 @@ function createSyncGameSocket() {
     conn.onopen = function (evt) {
         console.log("***ONOPEN: created sync-WebSocket");
         conn.send(
-            "CONN_GAME_"
+            "CONN_"
             + localStorage.getItem("gameId") + "_"
             + localStorage.getItem("playerRole")
         );
@@ -263,6 +279,8 @@ function createSyncGameSocket() {
 
     conn.onclose = function (evt) {
         console.log("***ONCLOSE");
+        // Game ended. Jump back to index page
+        setTimeout(() => window.location.href = "index.html", 1000);
     };
 }
 

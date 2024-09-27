@@ -30,5 +30,7 @@ public class Game {
     private Session playerOneInitSession;
     private Session playerOneSyncSession;
     private Session playerTwoSyncSession;
+    private boolean playerOneConnected;
+    private boolean playerTwoConnected;
 
 }

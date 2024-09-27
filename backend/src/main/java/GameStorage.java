@@ -1,7 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -14,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameStorage {
 
     private static ConcurrentHashMap<String, Game> allGames = new ConcurrentHashMap<>(16);
-    private static Integer lock;
 
     private static Gson gson = new GsonBuilder()
 //            .setPrettyPrinting()
@@ -26,7 +24,7 @@ public class GameStorage {
 
     public static ConcurrentHashMap<String, Game> getAllGames() {
 //        if (allGames == null) {
-//            synchronized (lock) {
+//            synchronized (GameStorage.class) {
 //                if (allGames == null) {
 //                    allGames = new ConcurrentHashMap<>(16);
 //                }
@@ -40,10 +38,6 @@ public class GameStorage {
     }
 
     public static String getAllGamesString() {
-        Game g0 = new Game(); g0.setGameId(UUID.randomUUID()); g0.setStarted(true);
-        Game g1 = new Game(); g1.setGameId(UUID.randomUUID());
-//        allGames.put("456", g0);
-//        allGames.put("789", g1);
         System.out.println("allGames.size(): " + allGames.size());
 
         return gson.toJson(allGames.values());
@@ -56,5 +50,9 @@ public class GameStorage {
 //                    return gson.toJson(e);
 //                })
 //                .reduce("", (a, b) -> a + "|" + b);
+    }
+
+    public static String toJsonString(Game game) {
+        return gson.toJson(game);
     }
 }
